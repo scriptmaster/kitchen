@@ -4,6 +4,6 @@ Module {
 	version: '1.0.0'
 	license: 'ISC'
 	dependencies: [
-		'vmon'
+		'https://github.com/Larpon/vmon'
 	]
 }
