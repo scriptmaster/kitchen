@@ -5,9 +5,9 @@ Written in pure v (with vmon dependency, a C wrapper for dmon, file watcher)
 
 ## Usage 
 
-`v -scp yourhost.com`
+`kitchen -scp yourhost.com`
 
-`v -e md,mdx,mmd ./build.sh`
+`kitchen -e md,mdx,mmd ./build.sh`
 
 ## Installation
 `v install kitchen`
