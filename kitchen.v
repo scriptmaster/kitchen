@@ -10,7 +10,7 @@ import cli { Command, Flag }
 const (
 	name = 'kitchen'
 	description = "sync / rsync / watchexec program that runs a command on source or text file modification. Ignores common binary extensions and dirs."
-	version = "v1.0.0"
+	version = "v1.0.1"
 	pwd := os.abs_path('.')
 	extensions := 'v,sh,txt,md,mdx,mmd,c,py,html,css,js,ts,java,jsx,tsx,ini,json,yaml,toml,csv,tsv'
 	// extensions_arr := extensions.split(',')
@@ -99,6 +99,7 @@ fn watch_callback(watch_id vmon.WatchID, action vmon.Action, root_path string, f
 		log.debug('user_data is nil')
 		return
 	}
+
 	mut config := unsafe { &Config(user_data) }
 	if isnil(config) {
 		log.debug('config is nil')
@@ -106,9 +107,9 @@ fn watch_callback(watch_id vmon.WatchID, action vmon.Action, root_path string, f
 	}
 
 	$if trace ? {
-		log.info('watch: id: $watch_id, action: $action, root: $root_path, file: $file_path, $config')
+		log.info('watch[$watch_id]: $action $file_path in $root_path, $config')
 	} $else {
-		log.info('watch: id: $watch_id, action: $action, root: $root_path, file: $file_path')
+		log.info('watch[$watch_id]: $action $file_path in $root_path')
 	}
 
 	match action {
@@ -149,25 +150,30 @@ fn file_modified(root_path string, file_path string, mut config Config) !bool {
 	$if trace ? {
 		println('config: $config')
 	}
-	config.file_path = file_path
+	config.file_path = file_path // memoization
 
-	if config.exts.any(file_path.ends_with('.'+it)) && !file_path.starts_with('.') && (!config.excludes.any(file_path.starts_with(it) || file_path.contains('/'+it+'/'))) {
-
+	file_name := file_path.all_after_last('/') //test:
+	paths := file_path.split('/') //test:
+	if file_name.contains('.') && config.exts.any(file_path.ends_with('.'+it)) &&
+		!paths.any(it.starts_with('.')) && !paths.any(it.starts_with('_')) &&
+			!config.excludes.any(it in paths)
+	{
 		if config.cmd != '' {
 			exec(config.cmd, root_path, file_path)
 		}
 
 		if config.scp != '' {
+			root := root_path.trim_right('/')
 			if config.scp.starts_with('scp ') {
 				if config.scp.contains('\$0') || config.scp.contains('\$1') {
-					exec(config.scp, root_path, file_path)
+					exec(config.scp, root, file_path)
 				} else {
-					exec('scp \$0/\$1 ${config.scp[4..]}', root_path, file_path)
+					exec('scp \$0/\$1 ${config.scp[4..].trim_right("/")}', root, file_path)
 				}
 			} else if config.scp.contains('\$0') || config.scp.contains('\$1') {
-				exec('scp ${config.scp}', root_path, file_path)
+				exec('scp ${config.scp}', root, file_path)
 			} else {
-				exec('scp \$0/\$1 ${config.scp}', root_path, file_path)
+				exec('scp \$0/\$1 ${config.scp.trim_right("/")}/\$1', root, file_path)
 			}
 		}
 
