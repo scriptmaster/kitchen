@@ -5,17 +5,24 @@ Written in pure v (with vmon dependency, a C wrapper for dmon, file watcher)
 
 ## Usage 
 
+`kitchen "rsync . yourhost.com"`
+
+`kitchen "rsync . yourhost.com" -p "ssh yourhost.com systemctl restart web.service"`
+
 `kitchen -scp yourhost.com`
 
 `kitchen -e md,mdx,mmd ./build.sh`
 
 ## Installation
-`v install kitchen`
+`v install scriptmaster.kitchen`
 
 or
 
 `v install https://github.com/scriptmaster/kitchen`
 
+#### 2. Install to /usr/local/bin/
+
+`v ~/.vmodules/kitchen `
 
 ### Extensions
 ```
