@@ -3,6 +3,20 @@ Kitchen: sync / rsync / watchexec program that runs a command on source or text 
 
 Written in pure v (with vmon dependency, a C wrapper for dmon, file watcher)
 
+## Usage 
+
+`v -scp yourhost.com`
+
+`v -e md,mdx,mmd ./build.sh`
+
+## Installation
+`v install kitchen`
+
+or
+
+`v install https://github.com/scriptmaster/kitchen`
+
+
 ### Extensions
 ```
 extensions := ['v', 'sh', 'txt', 'md', 'c', 'py', 'html', 'css', 'js', 'ts', 'java', 'jsx', 'tsx', 'ini', 'json', 'yaml', 'toml', 'csv', 'tsv']
@@ -12,6 +26,9 @@ extensions := ['v', 'sh', 'txt', 'md', 'c', 'py', 'html', 'css', 'js', 'ts', 'ja
 ```
 exclude := ['bin', 'obj', 'out', 'node_modules', 'artifacts', 'thirdparty', '_*', '.*']
 ```
+
+### Dependencies
+vmon
 
 #### Inspiration
 
