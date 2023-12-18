@@ -24,6 +24,8 @@ or
 
 `v ~/.vmodules/kitchen `
 
+`v install https://github.com/scriptmaster/kitchen && v ~/.vmodules/kitchen && cp -f ~/.vmodules/kitchen/kitchen /usr/local/bin && kitchen`
+
 ### Extensions
 ```
 extensions := ['v', 'sh', 'txt', 'md', 'c', 'py', 'html', 'css', 'js', 'ts', 'java', 'jsx', 'tsx', 'ini', 'json', 'yaml', 'toml', 'csv', 'tsv']

@@ -9,13 +9,11 @@ import cli { Command, Flag }
 
 const (
 	name = 'kitchen'
+	version = "v1.0.2"
 	description = "sync / rsync / watchexec program that runs a command on source or text file modification. Ignores common binary extensions and dirs."
-	version = "v1.0.1"
 	pwd := os.abs_path('.')
-	extensions := 'v,sh,txt,md,mdx,mmd,c,py,html,css,js,ts,java,jsx,tsx,ini,json,yaml,toml,csv,tsv'
-	// extensions_arr := extensions.split(',')
+	extensions := 'v,sh,vsh,vv,txt,md,mdx,mmd,c,py,cs,go,html,css,js,ts,java,jsx,tsx,ini,json,yaml,toml,csv,tsv'
 	excludes := 'bin,obj,out,node_modules,artifacts,thirdparty,_*,.*'
-	// excludes_arr := excludes.split(',')
 )
 
 @[console]
