@@ -4,14 +4,16 @@
 import time
 import os
 import log
+import v.vmod
 import vmon
 import cli { Command, Flag }
 
 const (
-	name = 'kitchen'
-	version = "v1.0.2"
-	logo = "✨✨✨ Kitchen ✨✨✨"
-	description = "$logo\nkitchen runs a command upon file modifications (transfers the modified watched file, if you provide -scp) and also runs multiple post commands, if you provide one or more -p commands.\n\nEssentially, a watchexec program that runs a command on source or text file modification. Ignores common binary extensions and dirs."
+	// name = 'kitchen'
+	// version = "v1.0.2"
+	// logo = "✨✨✨ Kitchen ✨✨✨"
+	// description = "$logo\nkitchen runs a command upon file modifications (transfers the modified watched file, if you provide -scp) and also runs multiple post commands, if you provide one or more -p commands.\n\nEssentially, a watchexec program that runs a command on source or text file modification. Ignores common binary extensions and dirs."
+	mod = vmod.decode( @VMOD_FILE ) or { panic('v.mod decode error: $err') }
 	pwd := os.abs_path('.')
 	extensions := 'v,sh,vsh,vv,txt,md,mdx,mmd,c,cs,go,py,html,css,js,ts,java,jsx,tsx,ini,json,yaml,toml,csv,tsv'
 	excludes := 'bin,obj,out,node_modules,artifacts,thirdparty,_*,.*'
@@ -20,9 +22,9 @@ const (
 @[console]
 fn main() {
 	mut cmd := Command{
-		name: name
-		description: description
-		version: version
+		name: mod.name
+		description: "Version ${mod.version}\n-------------\n${mod.description}"
+		version: mod.version
 		usage: "command_to_run_on_file_change.sh"
 		execute: kitchen
 	}
@@ -63,7 +65,7 @@ fn main() {
 }
 
 fn kitchen(cmd Command) ! {
-	log.info('$name started: ${time.now()}')
+	log.info('${mod.name} started: ${time.now()}')
 
 	mut config := new_config()
 	config.exts = (cmd.flags.get_string('ext') or { extensions }).split(',').map(it.trim(' '))
