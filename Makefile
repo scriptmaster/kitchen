@@ -2,7 +2,13 @@ all: build install
 
 build:
 	time v .
-	# time v -prod .
+
+release:
+	time v -prod .
+	@ls -lah kitchen
+	@echo "	"
 
 install:
-	cp kitchen /usr/local/bin/
+	cp -f kitchen /usr/local/bin/
+	@ls -lah /usr/local/bin/kitchen
+	@echo "	"

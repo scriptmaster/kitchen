@@ -10,9 +10,10 @@ import cli { Command, Flag }
 const (
 	name = 'kitchen'
 	version = "v1.0.2"
-	description = "sync / rsync / watchexec program that runs a command on source or text file modification. Ignores common binary extensions and dirs."
+	logo = "✨✨✨ Kitchen ✨✨✨"
+	description = "$logo\nkitchen runs a command upon file modifications (transfers the modified watched file, if you provide -scp) and also runs multiple post commands, if you provide one or more -p commands.\n\nEssentially, a watchexec program that runs a command on source or text file modification. Ignores common binary extensions and dirs."
 	pwd := os.abs_path('.')
-	extensions := 'v,sh,vsh,vv,txt,md,mdx,mmd,c,py,cs,go,html,css,js,ts,java,jsx,tsx,ini,json,yaml,toml,csv,tsv'
+	extensions := 'v,sh,vsh,vv,txt,md,mdx,mmd,c,cs,go,py,html,css,js,ts,java,jsx,tsx,ini,json,yaml,toml,csv,tsv'
 	excludes := 'bin,obj,out,node_modules,artifacts,thirdparty,_*,.*'
 )
 
@@ -21,9 +22,8 @@ fn main() {
 	mut cmd := Command{
 		name: name
 		description: description
-		version: '1.0.0'
-		usage: "✨✨✨ Kitchen ✨✨✨"
-		//required_args: 1
+		version: version
+		usage: "command_to_run_on_file_change.sh"
 		execute: kitchen
 	}
 
@@ -57,6 +57,7 @@ fn main() {
 		description: 'post command to exec. e.g., "echo done >> done.log" Multple commands -p can be given, those will be run in parallel.'
 	})
 
+	//cmd.add_default_flags()
 	cmd.setup()
 	cmd.parse(os.args)
 }
@@ -137,13 +138,6 @@ fn file_modified(root_path string, file_path string, mut config Config) !bool {
 			return false // cannot continue if already scheduled to run in a while
 		}
 	}
-	// wait for completion
-	for {
-		if config.file_path == '' {
-			break // wait for previous op to complete
-		}
-		time.sleep(110 * time.millisecond)
-	}
 
 	$if trace ? {
 		println('config: $config')
@@ -185,9 +179,7 @@ fn file_modified(root_path string, file_path string, mut config Config) !bool {
 	}
 
 	log.info('Done: $file_path')
-	time.sleep(90 * time.millisecond)
-	//time.sleep(1100 * time.millisecond)
-	//log.info('Done2: $file_path')
+	time.sleep(10 * time.millisecond)
 
 	config.file_path = ''
 	config.memoized_paths[file_path] = .free

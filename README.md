@@ -22,13 +22,11 @@ or
 
 #### 2. Install to /usr/local/bin/
 
-`v ~/.vmodules/kitchen `
-
-`v install https://github.com/scriptmaster/kitchen && v ~/.vmodules/kitchen && cp -f ~/.vmodules/kitchen/kitchen /usr/local/bin && kitchen`
+`v install https://github.com/scriptmaster/kitchen && v -o /usr/local/bin/kitchen ~/.vmodules/kitchen`
 
 ### Extensions
 ```
-extensions := ['v', 'sh', 'txt', 'md', 'c', 'py', 'html', 'css', 'js', 'ts', 'java', 'jsx', 'tsx', 'ini', 'json', 'yaml', 'toml', 'csv', 'tsv']
+extensions := ['v', 'sh', 'txt', 'md', 'c', 'cs', 'go', 'py', 'html', 'css', 'js', 'ts', 'java', 'jsx', 'tsx', 'ini', 'json', 'yaml', 'toml', 'csv', 'tsv']
 ```
 
 ### Exclude
