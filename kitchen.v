@@ -213,7 +213,7 @@ fn exec(cmd string, root_path string, file_path string) {
 	// $if trace ? {
 	log.info('command: $command')
 	// }
-	os.execute(command)
+	println(os.execute(command).output)
 }
 
 enum MemoizationState as u8 {
