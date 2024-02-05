@@ -14,7 +14,7 @@ const (
 	// logo = "✨✨✨ Kitchen ✨✨✨"
 	// description = "$logo\nkitchen runs a command upon file modifications (transfers the modified watched file, if you provide -scp) and also runs multiple post commands, if you provide one or more -p commands.\n\nEssentially, a watchexec program that runs a command on source or text file modification. Ignores common binary extensions and dirs."
 	mod = vmod.decode( @VMOD_FILE ) or { panic('v.mod decode error: $err') }
-	pwd := os.abs_path('.')
+	cwd := os.abs_path('.')
 	extensions := 'v,sh,vsh,vv,txt,md,mdx,mmd,c,cs,go,py,html,css,js,mjs,ts,java,jsx,tsx,ini,json,jsonc,yaml,toml,csv,tsv,mojo,Makefile,Dockerfile'
 	excludes := 'bin,obj,out,node_modules,artifacts,thirdparty,.git,_*,.*'
 )
@@ -49,7 +49,7 @@ fn main() {
 		name: 'scp'
 		flag: .string
 		abbrev: 's'
-		description: 'scp options: e.g., -scp root@domain.com:/usr/local/src/project/ copies \$0/\$1 to the given host,\n\twhere \$0 is pwd, \$1 is the modified file path.'
+		description: 'scp options: e.g., -scp root@domain.com:/usr/local/src/project/ copies \$0/\$1 to the given host,\n\twhere \$0 is cwd, \$1 is the modified file path.'
 	})
 
 	cmd.add_flag(Flag{
@@ -86,7 +86,7 @@ fn kitchen(cmd Command) ! {
 	config.cmd = if cmd.args.len > 0 { cmd.args[0] } else { '' }
 
 	flags := u32(vmon.WatchFlag.recursive) | u32(vmon.WatchFlag.follow_symlinks)
-	vmon.watch(pwd.trim_right('/'), watch_callback, flags, config) or { panic(err) }
+	vmon.watch(cwd.trim_right('/'), watch_callback, flags, config) or { panic(err) }
 
 	for {
 		inp := os.input('')
@@ -97,11 +97,11 @@ fn kitchen(cmd Command) ! {
 			'' {
 				if config.deploy != '' {
 					// println('deploy cmd: ${config.deploy}')
-					exec(config.deploy, pwd, '')
+					exec(config.deploy, cwd, '')
 				}
 			}
 			else {
-				file_modified(pwd, '', mut config) or {
+				file_modified(cwd, '', mut config) or {
 					log.error('Error in file modified')
 				}
 			}

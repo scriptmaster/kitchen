@@ -1,7 +1,10 @@
 all: build install help
 
-build:
+build: pclear
 	time v .
+
+pclear:
+	killall kitchen &2>/dev/null
 
 release:
 	time v -prod -cc gcc -cflags "-s -Os" .
