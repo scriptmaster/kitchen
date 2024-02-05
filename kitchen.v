@@ -59,6 +59,13 @@ fn main() {
 		description: 'post command to exec. e.g., "echo done >> done.log" Multple commands -p can be given, those will be run in parallel.'
 	})
 
+	cmd.add_flag(Flag{
+		name: 'deploy'
+		flag: .string
+		abbrev: 'd'
+		description: 'deploy command to exec upon pressing enter. e.g., "echo done >> done.log"'
+	})
+
 	//cmd.add_default_flags()
 	cmd.setup()
 	cmd.parse(os.args)
@@ -72,6 +79,7 @@ fn kitchen(cmd Command) ! {
 	config.excludes = (cmd.flags.get_string('exclude') or { excludes }).split(',').map(it.trim(' '))
 
 	config.scp = cmd.flags.get_string('scp') or { '' } // if scp_options_user_host_path contains 'scp scp_options_user_host_path $filename'
+	config.deploy = cmd.flags.get_string('deploy') or { '' }
 	// config.cmd = cmd.flags.get_string('cmd') or { '' } // if scp_options_user_host_path contains 'scp scp_options_user_host_path $filename'
 	config.post_cmd = cmd.flags.get_strings('post_cmd') or { [''] } // if scp_options_user_host_path contains 'scp scp_options_user_host_path $filename'
 
@@ -85,6 +93,12 @@ fn kitchen(cmd Command) ! {
 		match inp {
 			'exit', 'exit()', ':q', ':wq', 'quit', 'break' {
 				break
+			}
+			'' {
+				if config.deploy != '' {
+					// println('deploy cmd: ${config.deploy}')
+					exec(config.deploy, pwd, '')
+				}
 			}
 			else {
 				file_modified(pwd, '', mut config) or {
@@ -220,6 +234,7 @@ mut:
 	scp string
 	cmd string
 	post_cmd []string
+	deploy string
 }
 
 fn new_config() Config {
