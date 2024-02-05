@@ -15,8 +15,8 @@ const (
 	// description = "$logo\nkitchen runs a command upon file modifications (transfers the modified watched file, if you provide -scp) and also runs multiple post commands, if you provide one or more -p commands.\n\nEssentially, a watchexec program that runs a command on source or text file modification. Ignores common binary extensions and dirs."
 	mod = vmod.decode( @VMOD_FILE ) or { panic('v.mod decode error: $err') }
 	pwd := os.abs_path('.')
-	extensions := 'v,sh,vsh,vv,txt,md,mdx,mmd,c,cs,go,py,html,css,js,ts,java,jsx,tsx,ini,json,yaml,toml,csv,tsv'
-	excludes := 'bin,obj,out,node_modules,artifacts,thirdparty,_*,.*'
+	extensions := 'v,sh,vsh,vv,txt,md,mdx,mmd,c,cs,go,py,html,css,js,mjs,ts,java,jsx,tsx,ini,json,jsonc,yaml,toml,csv,tsv,mojo,Makefile,Dockerfile'
+	excludes := 'bin,obj,out,node_modules,artifacts,thirdparty,.git,_*,.*'
 )
 
 @[console]
@@ -147,8 +147,13 @@ fn file_modified(root_path string, file_path string, mut config Config) !bool {
 	config.file_path = file_path // memoization
 
 	file_name := file_path.all_after_last('/') //test:
-	paths := file_path.split('/') //test:
-	if file_name.contains('.') && config.exts.any(file_path.ends_with('.'+it)) &&
+	paths := file_path.split('/') //test: 
+
+	// if ((file_name.contains('.') && config.exts.any(file_path.ends_with('.'+it))) || (file_name in config.exts)) &&
+	// 	!paths.any(it.starts_with('.')) && !paths.any(it.starts_with('_')) &&
+	// 		!config.excludes.any(it in paths)
+	// {
+	if (file_name.contains('.') && config.exts.any(file_path.ends_with('.'+it))) &&
 		!paths.any(it.starts_with('.')) && !paths.any(it.starts_with('_')) &&
 			!config.excludes.any(it in paths)
 	{
